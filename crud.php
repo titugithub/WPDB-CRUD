@@ -93,11 +93,22 @@ function my_submenu_page_2() {
     <?php
 }
 
+// ...
+
 function my_submenu_page_1() {
     // Content for the Student List page
     global $wpdb;
     $table_name = $wpdb->prefix . 'crud_table';
     $alldata = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+
+    if (isset($_POST['btnupdate'])) {
+        $id = intval($_GET['id']);
+        $name = sanitize_text_field($_POST['name']);
+        $email = sanitize_text_field($_POST['email']);
+
+        $wpdb->update($table_name, array('name' => $name, 'email' => $email), array('id' => $id));
+        echo "<p>Record with ID $id has been updated.</p>";
+    }
     ?>
 
     <table>
@@ -131,6 +142,7 @@ function my_submenu_page_1() {
         }
         ?>
     </table>
+
     <?php
     // Check if an action is requested (Edit or Delete)
     if (isset($_GET['action'])) {
@@ -163,16 +175,9 @@ function my_submenu_page_1() {
             $id = intval($_GET['id']);
             $wpdb->delete($table_name, array('id' => $id));
             echo "<p>Record with ID $id has been deleted.</p>";
-        } elseif ($_GET['action'] === 'update') {
-            // Handle update action
-            $id = intval($_GET['id']);
-            $name = sanitize_text_field($_POST['name']);
-            $email = sanitize_text_field($_POST['email']);
-
-            $wpdb->update($table_name, array('name' => $name, 'email' => $email), array('id' => $id));
-
-            echo "<p>Record with ID $id has been updated.</p>";
         }
     }
 }
+
+// ...
 
